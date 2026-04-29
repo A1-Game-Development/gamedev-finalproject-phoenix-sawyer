@@ -1,50 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using TMPro;
 
-namespace Cainos.PixelArtTopDown_Basic
-{
-    public class TopDownCharacterController : MonoBehaviour
+public class TopDownCharacterController : MonoBehaviour
     {
         public float speed;
+        private Vector2 moveInput;
+        private Vector2 lookInput; 
+        private Rigidbody2D rigi;
 
-        private Animator animator;
-
-        private void Start()
-        {
-            animator = GetComponent<Animator>();
-        }
-
-
-        private void Update()
-        {
-            Vector2 dir = Vector2.zero;
-            if (Input.GetKey(KeyCode.A))
+        void FixedUpdate() {
+            if (moveInput.magnitude > 0.1f)
             {
-                dir.x = -1;
-                animator.SetInteger("Direction", 3);
+                Vector2 moveForward = moveInput.y * this.transform.up;
+                Vector2 moveRight = moveInput.x * this.transform.right;
+                Vector2 moveVector = moveForward + moveRight;
+    
+                rigi.AddForce(moveVector * speed * Time.deltaTime);
             }
-            else if (Input.GetKey(KeyCode.D))
-            {
-                dir.x = 1;
-                animator.SetInteger("Direction", 2);
-            }
-
-            if (Input.GetKey(KeyCode.W))
-            {
-                dir.y = 1;
-                animator.SetInteger("Direction", 1);
-            }
-            else if (Input.GetKey(KeyCode.S))
-            {
-                dir.y = -1;
-                animator.SetInteger("Direction", 0);
-            }
-
-            dir.Normalize();
-            animator.SetBool("IsMoving", dir.magnitude > 0);
-
-            GetComponent<Rigidbody2D>().linearVelocity = speed * dir;
         }
     }
-}
